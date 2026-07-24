@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BibliotecaApi.Interfaces.IServices;
+using BibliotecaApi.Model.Dtos.Livro;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,17 +10,23 @@ namespace BibliotecaApi.Controllers
 	[ApiController]
 	public class LivroController : ControllerBase
 	{
-		[Authorize]
-		[HttpGet("teste")]
-		public IActionResult Teste()
-		{
-			var claims = User.Claims.Select(c => new
-			{
-				c.Type,
-				c.Value
-			});
+		private readonly ILivroService _livroService;
 
-			return Ok(claims);
+		public LivroController(ILivroService livroService)
+		{
+			_livroService = livroService;
+		}
+
+		[Authorize]
+		[HttpPost("criar-livro")]
+		public async Task<IActionResult> CriarLivro(CriarLivroRequest request)
+		{
+			var result = await _livroService.CriarLivro(request);
+
+			if (!result.IsSuccess)
+				return BadRequest(result.Error);
+
+			return Ok(result.Data);
 		}
 	}
 }

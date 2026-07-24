@@ -17,12 +17,12 @@ namespace BibliotecaApi.Repository
 			_context = context;
 		}
 
-		public async Task<LivroDto?> GetByISBN(string ISBN)
+		public async Task<Livro> GetByISBN(string ISBN)
 		{
 			var livro = await _context.Livros
 				.FirstOrDefaultAsync(l => l.ISBN == ISBN);
 
-			return livro.ToLivroDto();
+			return livro;
 		}
 
 		public async Task<Livro> AddAsync(Livro request)
