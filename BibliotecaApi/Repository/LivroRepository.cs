@@ -1,5 +1,7 @@
 ﻿using BibliotecaApi.Data;
 using BibliotecaApi.Interfaces.IRepositories;
+using BibliotecaApi.Mapper;
+using BibliotecaApi.Model;
 using BibliotecaApi.Model.Dtos.Livro;
 using BibliotecaApi.Model.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -17,8 +19,18 @@ namespace BibliotecaApi.Repository
 
 		public async Task<LivroDto?> GetByISBN(string ISBN)
 		{
-			return await _context.Livros
+			var livro = await _context.Livros
 				.FirstOrDefaultAsync(l => l.ISBN == ISBN);
+
+			return livro.ToLivroDto();
+		}
+
+		public async Task<Livro> AddAsync(Livro request)
+		{
+			_context.Livros.Add(request);
+			await _context.SaveChangesAsync();
+
+			return request;
 		}
 	}
 }

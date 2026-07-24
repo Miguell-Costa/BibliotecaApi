@@ -74,9 +74,49 @@ builder.Services.AddAuthentication(options =>
 	};
 });
 
+// Policies
+builder.Services.AddAuthorization(options =>
+{
+	// User 
+	options.AddPolicy("User.Read", policy => policy.RequireClaim("Utilizador", "CanRead"));
+	options.AddPolicy("User.Update", policy => policy.RequireClaim("Utilizador", "CanUpdate"));
+	options.AddPolicy("User.ManageRoles", policy => policy.RequireClaim("Utilizador", "CanManageRoles"));
+
+	// Roles
+	options.AddPolicy("Role.Create", policy => policy.RequireClaim("Role", "CanCreate"));
+	options.AddPolicy("Role.Read", policy => policy.RequireClaim("Role", "CanRead"));
+	options.AddPolicy("Role.Update", policy => policy.RequireClaim("Role", "CanUpdate"));
+	options.AddPolicy("Role.Delete", policy => policy.RequireClaim("Role", "CanDelete"));
+	options.AddPolicy("Role.ManageClaims", policy => policy.RequireClaim("Role", "CanManageClaims"));
+
+	// Livro
+	options.AddPolicy("Livro.Create", policy => policy.RequireClaim("Livro", "CanCreate"));
+	options.AddPolicy("Livro.Read", policy => policy.RequireClaim("Livro", "CanRead"));
+	options.AddPolicy("Livro.Update", policy => policy.RequireClaim("Livro", "CanUpdate"));
+	options.AddPolicy("Livro.Delete", policy => policy.RequireClaim("Livro", "CanDelete"));
+
+	// Autor
+	options.AddPolicy("Autor.Create", policy => policy.RequireClaim("Autor", "CanCreate"));
+	options.AddPolicy("Autor.Read", policy => policy.RequireClaim("Autor", "CanRead"));
+	options.AddPolicy("Autor.Update", policy => policy.RequireClaim("Autor", "CanUpdate"));
+	options.AddPolicy("Autor.Delete", policy => policy.RequireClaim("Autor", "CanDelete"));
+
+	// Categoria
+	options.AddPolicy("Categoria.Create", policy => policy.RequireClaim("Categoria", "CanCreate"));
+	options.AddPolicy("Categoria.Read", policy => policy.RequireClaim("Categoria", "CanRead"));
+	options.AddPolicy("Categoria.Update", policy => policy.RequireClaim("Categoria", "CanUpdate"));
+	options.AddPolicy("Categoria.Delete", policy => policy.RequireClaim("Categoria", "CanDelete"));
+
+
+});
+
 // -------- Serviços --------
 builder.Services.AddScoped<ILivroRepository, LivroRepository>();
 builder.Services.AddScoped<ILivroService, LivroService>();
+builder.Services.AddScoped<IAutorRepository, AutorRepository>();
+builder.Services.AddScoped<IAutorService, AutorService>();
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 
 builder.Services.AddControllers();
 

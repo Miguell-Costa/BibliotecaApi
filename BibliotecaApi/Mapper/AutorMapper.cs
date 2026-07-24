@@ -5,7 +5,7 @@ namespace BibliotecaApi.Mapper
 {
 	public static class AutorMapper
 	{
-		public static AutorDto ToRoleDto(this Autor autor)
+		public static AutorDto ToAutorDto(this Autor autor)
 		{
 			return new AutorDto
 			{
@@ -15,6 +15,18 @@ namespace BibliotecaApi.Mapper
 				DataNascimento = autor.DataNascimento,
 				DataMorte = autor.DataMorte,
 				OpenLibraryId = autor.OpenLibraryId
+			};
+		}
+
+		public static Autor ToAutorFromCreate(this CriarAutorRequest dto)
+		{
+			return new Autor
+			{
+				Nome = dto.Nome,
+				Biografia = dto.Biografia,
+				DataNascimento = dto.DataNascimento,
+				DataMorte = dto.DataMorte,
+				OpenLibraryId = dto.OpenLibraryId
 			};
 		}
 	}

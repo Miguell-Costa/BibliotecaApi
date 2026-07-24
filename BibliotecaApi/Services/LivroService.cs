@@ -1,5 +1,6 @@
 ﻿using BibliotecaApi.Interfaces.IRepositories;
 using BibliotecaApi.Interfaces.IServices;
+using BibliotecaApi.Mapper;
 using BibliotecaApi.Model;
 using BibliotecaApi.Model.Dtos.Livro;
 
@@ -18,17 +19,24 @@ namespace BibliotecaApi.Services
 			_categoriaRepository = categoriaRepository;
 		}
 
-		public async Task<Results<MessageResponseDto>> CriarLivro(CriarLivroRequest request)
+		public async Task<Result<LivroDto>> CriarLivro(CriarLivroRequest request)
 		{
 			var existISBN = await _livroRepository.GetByISBN(request.ISBN);
-			if (existISBN == null)
-				return Result<MessageResponseDto>.Failure("Já existe um livro com esse ISBN");
+			if (existISBN != null)
+				return Result<LivroDto>.Failure("Já existe um livro com esse ISBN");
 
 			var existAutor = await _autorRepository.GetById(request.AutorId);
 			if(existAutor == null)
-				return Result<MessageResponseDto>.Failure("Não existe um autor com esse id");
+				return Result<LivroDto>.Failure("Não existe um autor com esse id");
 
-			return Result<MessageResponseDto>.Success(new MessageResponseDto { Message = "Livro criado com sucesso"});
+			var existCategoria = await _categoriaRepository.GetById(request.CategoriaId);
+			if (existCategoria == null)
+				return Result<LivroDto>.Failure("Não existe uma categoria com esse id");
+
+			var livro = request.ToLivroFromCreateDto();
+			await _livroRepository.AddAsync(livro);
+
+			return Result<LivroDto>.Success(livro.ToLivroDto());
 		}
 	}
 }
