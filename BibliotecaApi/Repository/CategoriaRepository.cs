@@ -17,12 +17,12 @@ namespace BibliotecaApi.Repository
 			_context = context;
 		}
 
-		public async Task<CategoriaDto?> GetById(int CategoriaId)
+		public async Task<Categoria> GetById(int CategoriaId)
 		{
 			var categoria = await _context.Categorias
 				.FirstOrDefaultAsync(l => l.Id == CategoriaId);
 
-			return categoria.ToCategoriaDto();
+			return categoria;
 		}
 
 		public async Task<Categoria> GetByNome(string Nome)
@@ -40,5 +40,32 @@ namespace BibliotecaApi.Repository
 
 			return categoria.ToCategoriaDto();
 		}
+
+		public async Task<Categoria> ApagarAsync(Categoria categoria)
+		{
+			_context.Categorias.Remove(categoria);
+			await _context.SaveChangesAsync();
+
+			return categoria;
+		}
+	
+		public async Task<bool> TemLivrosAssociadosAsync(int id)
+		{
+			return await _context.Livros.AnyAsync(l => l.CategoriaId == id);;
+		}
+
+		public async Task<List<Categoria>> GetLivrosAsync()
+		{
+			return await _context.Categorias.ToListAsync();
+		}
+	
+		public async Task<Categoria> AtualizarCategoriaAsync(AtualizarCategoriaRequest dto, Categoria categoria)
+		{
+			categoria.Nome = dto.Nome;
+			await _context.SaveChangesAsync();
+
+			return categoria;
+		}
+		
 	}
 }

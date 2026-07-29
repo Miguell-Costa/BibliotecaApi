@@ -5,7 +5,7 @@ namespace BibliotecaApi.Interfaces.IRepositories
 {
 	public interface ILivroRepository
 	{
-		Task<Livro> GetByISBN(string ISBN);
+		Task<Livro?> GetByISBN(string ISBN);
 		Task<Livro> AddAsync(Livro request);
 	}
 }

@@ -4,6 +4,7 @@ using BibliotecaApi.Mapper;
 using BibliotecaApi.Model;
 using BibliotecaApi.Model.Dtos.Categoria;
 using BibliotecaApi.Model.Dtos.Livro;
+using BibliotecaApi.Model.Entities;
 
 namespace BibliotecaApi.Services
 {
@@ -31,5 +32,46 @@ namespace BibliotecaApi.Services
 
 			return Result<CategoriaDto>.Success(categoria.ToCategoriaDto());
 		}
+
+		public async Task<Result<MessageResponseDto>> ApagarCategoria(int id)
+		{
+			var categoria = await _categoriaRepository.GetById(id);
+
+			if (categoria == null)
+				return Result<MessageResponseDto>.Failure("Não existe nenhuma categoria com esse id");
+
+			var temLivrosAssociados = await _categoriaRepository.TemLivrosAssociadosAsync(categoria.Id);
+
+			if(temLivrosAssociados)
+				return Result<MessageResponseDto>.Failure("Não é possivel apagar uma categoria que tem livros associados");
+
+			await _categoriaRepository.ApagarAsync(categoria);
+
+			return Result<MessageResponseDto>.Success(new MessageResponseDto { Message = "Categoria apagada com sucesso" });
+		}
+	
+		public async Task<Result<List<CategoriaDto>>> ListarCategorias()
+		{
+			var categorias = await _categoriaRepository.GetLivrosAsync();
+
+			var categoriasDto = categorias
+				.Select(c => c.ToCategoriaDto())
+				.ToList();
+
+			return Result<List<CategoriaDto>>.Success(categoriasDto);
+		}
+		
+		public async Task<Result<CategoriaDto>> AtualizarCategoria(int id, AtualizarCategoriaRequest dto)
+		{
+			var categoriaExist = await _categoriaRepository.GetById(id);
+
+			if (categoriaExist == null)
+				return Result<CategoriaDto>.Failure("Não existe nenhuma categoria com esse id");
+
+			var categoria = await _categoriaRepository.AtualizarCategoriaAsync(dto, categoriaExist);
+
+			return Result<CategoriaDto>.Success(categoria.ToCategoriaDto());
+		}
+
 	}
 }

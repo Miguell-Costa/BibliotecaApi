@@ -18,7 +18,7 @@ namespace BibliotecaApi.Controllers
 		}
 
 		[HttpPost("criar-autor")]
-		[Authorize(Policy = "Autor.Create")]
+		//[Authorize(Policy = "Autor.Create")]
 		public async Task<IActionResult> CriarAutor(CriarAutorRequest request)
 		{
 			var result = await _autorService.CreateAutor(request);

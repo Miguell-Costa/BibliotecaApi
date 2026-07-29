@@ -17,7 +17,7 @@ namespace BibliotecaApi.Repository
 			_context = context;
 		}
 
-		public async Task<Livro> GetByISBN(string ISBN)
+		public async Task<Livro?> GetByISBN(string ISBN)
 		{
 			var livro = await _context.Livros
 				.FirstOrDefaultAsync(l => l.ISBN == ISBN);
