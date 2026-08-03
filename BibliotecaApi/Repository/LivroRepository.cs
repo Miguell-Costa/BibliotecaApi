@@ -56,7 +56,7 @@ namespace BibliotecaApi.Repository
 	
 		public async Task<Livro> ApagarLivroAsync(Livro livro)
 		{
-			_context.Remove(livro);
+			_context.Livros.Remove(livro);
 			await _context.SaveChangesAsync();
 
 			return livro;
