@@ -9,5 +9,6 @@ namespace BibliotecaApi.Interfaces.IServices
 		Task<Result<MessageResponseDto>> ApagarCategoria(int id);
 		Task<Result<List<CategoriaDto>>> ListarCategorias();
 		Task<Result<CategoriaDto>> AtualizarCategoria(int id, AtualizarCategoriaRequest dto);
+		Task<Result<CategoriaDto>> GetById(int id);
 	}
 }

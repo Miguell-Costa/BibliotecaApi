@@ -19,7 +19,7 @@ namespace BibliotecaApi.Controllers
 		}
 
 		[HttpPost("criar-categoria")]
-		//[Authorize(Policy = "Categoria.Create")]
+		[Authorize(Policy = "Categoria.Create")]
 		public async Task<IActionResult> CriarCategoria(CriarCategoriaRequest request)
 		{
 			var result = await _categoriaService.CreateCategoria(request);
@@ -31,6 +31,7 @@ namespace BibliotecaApi.Controllers
 		}
 
 		[HttpDelete("apagar-categoria-/{id}")]
+		[Authorize(Policy = "Categoria.Create")]
 		public async Task<IActionResult> ApagarCategoria(int id)
 		{
 			var result = await _categoriaService.ApagarCategoria(id);
@@ -42,6 +43,7 @@ namespace BibliotecaApi.Controllers
 		}
 
 		[HttpGet("listar-categorias")]
+		[Authorize(Policy = "Categoria.Read")]
 		public async Task<IActionResult> ListarCategorias()
 		{
 			var result = await _categoriaService.ListarCategorias();
@@ -50,13 +52,22 @@ namespace BibliotecaApi.Controllers
 		}
 
 		[HttpPost("atualizar-categoria/{id}")]
-		//[Authorize(Policy = "Categoria.Create")]
+		[Authorize(Policy = "Categoria.Update")]
 		public async Task<IActionResult> AtualizarCategria(int id, AtualizarCategoriaRequest request)
 		{
 			var result = await _categoriaService.AtualizarCategoria(id, request);
 
 			if (!result.IsSuccess)
 				return BadRequest(result.Error);
+
+			return Ok(result.Data);
+		}
+	
+		[HttpGet("listar-categoria/{id}")]
+		[Authorize(Policy = "Categoria.Read")]
+		public async Task<IActionResult> ListarCategoriaId(int id)
+		{
+			var result = await _categoriaService.GetById(id);
 
 			return Ok(result.Data);
 		}

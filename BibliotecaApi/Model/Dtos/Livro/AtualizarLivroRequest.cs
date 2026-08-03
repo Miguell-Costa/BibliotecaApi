@@ -1,11 +1,7 @@
-﻿using BibliotecaApi.Model.Entities;
-
-namespace BibliotecaApi.Model.Dtos.Livro
+﻿namespace BibliotecaApi.Model.Dtos.Livro
 {
-	public class LivroDto
+	public class AtualizarLivroRequest
 	{
-		public int Id { get; set; }
-		public string ISBN { get; set; } = string.Empty;
 		public string Titulo { get; set; } = string.Empty;
 		public string? Descricao { get; set; } = string.Empty;
 		public int CategoriaId { get; set; }

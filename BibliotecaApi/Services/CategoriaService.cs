@@ -73,5 +73,15 @@ namespace BibliotecaApi.Services
 			return Result<CategoriaDto>.Success(categoria.ToCategoriaDto());
 		}
 
+		public async Task<Result<CategoriaDto>> GetById(int id)
+		{
+			var categoriaExist = await _categoriaRepository.GetById(id);
+
+			if (categoriaExist == null)
+				return Result<CategoriaDto>.Failure("Não existe nenhuma categoria com esse id");
+
+			return Result<CategoriaDto>.Success(categoriaExist.ToCategoriaDto());
+		}
+
 	}
 }

@@ -35,5 +35,30 @@ namespace BibliotecaApi.Repository
 
 			return autor;
 		}
+
+		public async Task<Autor> ApagarAsync(Autor autor)
+		{
+			_context.Autores.Remove(autor);
+			await _context.SaveChangesAsync();
+			return autor;
+		}
+
+		public async Task<List<Autor>> GetAutoresAsync()
+		{
+			return await _context.Autores.ToListAsync();
+		}
+
+		public async Task<bool> TemLivrosAssociados(int id)
+		{
+			return await _context.Livros.AnyAsync(l => l.AutorId == id);
+		}
+
+		public async Task<Autor> AtualizarAutorAsync(CriarAutorRequest request, Autor autor)
+		{
+			_context.Entry(autor).CurrentValues.SetValues(request);
+			await _context.SaveChangesAsync();
+
+			return autor;
+		}
 	}
 }

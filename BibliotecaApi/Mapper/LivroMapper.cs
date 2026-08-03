@@ -10,6 +10,7 @@ namespace BibliotecaApi.Mapper
 			return new LivroDto
 			{
 				Id = livro.Id,
+				ISBN = livro.ISBN,
 				Titulo = livro.Titulo,
 				Descricao = livro.Descricao,
 				CategoriaId = livro.CategoriaId,
@@ -24,6 +25,7 @@ namespace BibliotecaApi.Mapper
 		{
 			return new Livro
 			{
+				ISBN = dto.ISBN,
 				Titulo = dto.Titulo,
 				Descricao = dto.Descricao,
 				CategoriaId = dto.CategoriaId,

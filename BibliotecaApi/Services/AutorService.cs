@@ -28,10 +28,69 @@ namespace BibliotecaApi.Services
 				if (existeAutor != null)
 					return Result<AutorDto>.Failure("Já existe um autor com esse OpenLibraryId com esse nome");
 			}
-			
 
 			var autor = request.ToAutorFromCreate();
 			await _autorRepository.AddAsync(autor);
+
+			return Result<AutorDto>.Success(autor.ToAutorDto());
+		}
+
+		public async Task<Result<List<AutorDto>>> ListarAutores()
+		{
+			var autores = await _autorRepository.GetAutoresAsync();
+
+			var autoresDto = autores
+				.Select(a => a.ToAutorDto())
+				.ToList();
+
+			return Result<List<AutorDto>>.Success(autoresDto);
+		}
+
+		public async Task<Result<MessageResponseDto>> ApagarAutor(int id)
+		{
+			var autorExist = await _autorRepository.GetById(id);
+
+			if (autorExist == null)
+				return Result<MessageResponseDto>.Failure("Não existe um autor com esse id");
+
+			var temLivrosAssociados = await _autorRepository.TemLivrosAssociados(autorExist.Id);
+
+			if (temLivrosAssociados)
+				return Result<MessageResponseDto>.Failure("O autor tem livros associados");
+
+			await _autorRepository.ApagarAsync(autorExist);
+
+			return Result<MessageResponseDto>.Success(new MessageResponseDto { Message = "Autor apgado!" });
+		}
+	
+		public async Task<Result<AutorDto>> ListarPorId(int id)
+		{
+			var autorExist = await _autorRepository.GetById(id);
+
+			if (autorExist == null)
+				return Result<AutorDto>.Failure("Não existe um autor com esse id");
+
+			return	Result<AutorDto>.Success(autorExist.ToAutorDto());
+		}
+
+		public async Task<Result<AutorDto>> ListarPorOpenLibraryId(string id)
+		{
+			var autorExist = await _autorRepository.GetByOpenLibraryId(id);
+
+			if (autorExist == null)
+				return Result<AutorDto>.Failure("Não existe um autor com esse open library id");
+
+			return Result<AutorDto>.Success(autorExist.ToAutorDto());
+		}
+
+		public async Task<Result<AutorDto>> AtualizarAutor(int id, CriarAutorRequest request)
+		{
+			var autorExist = await _autorRepository.GetById(id);
+
+			if (autorExist == null)
+				return Result<AutorDto>.Failure("Não existe um autor com esse id");
+
+			var autor = await _autorRepository.ApagarAsync(autorExist);
 
 			return Result<AutorDto>.Success(autor.ToAutorDto());
 		}

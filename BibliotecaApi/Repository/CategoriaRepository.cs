@@ -61,7 +61,7 @@ namespace BibliotecaApi.Repository
 	
 		public async Task<Categoria> AtualizarCategoriaAsync(AtualizarCategoriaRequest dto, Categoria categoria)
 		{
-			categoria.Nome = dto.Nome;
+			_context.Entry(categoria).CurrentValues.SetValues(dto);
 			await _context.SaveChangesAsync();
 
 			return categoria;

@@ -32,5 +32,34 @@ namespace BibliotecaApi.Repository
 
 			return request;
 		}
+
+		public async Task<List<Livro>> GetLivrosAsync()
+		{
+			return await _context.Livros.ToListAsync();
+		}
+
+		public async Task<Livro> GetLivroByIdAsync(int id)
+		{
+			var livro = await _context.Livros
+				.FirstOrDefaultAsync(l => l.Id == id);
+
+			return livro;
+		}
+	
+		public async Task<Livro> UpdateLivroAsync(AtualizarLivroRequest request, Livro livro)
+		{
+			_context.Entry(livro).CurrentValues.SetValues(request);
+			await _context.SaveChangesAsync();
+
+			return livro;
+		}
+	
+		public async Task<Livro> ApagarLivroAsync(Livro livro)
+		{
+			_context.Remove(livro);
+			await _context.SaveChangesAsync();
+
+			return livro;
+		}
 	}
 }
