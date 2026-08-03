@@ -60,5 +60,13 @@ namespace BibliotecaApi.Repository
 
 			return autor;
 		}
+
+		public async Task<Autor> GetByNome(string Nome)
+		{
+			var autor = await _context.Autores
+				.FirstOrDefaultAsync(l => l.Nome.Equals(Nome));
+
+			return autor;
+		}
 	}
 }

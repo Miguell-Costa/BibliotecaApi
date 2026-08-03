@@ -1,4 +1,6 @@
-﻿using BibliotecaApi.Interfaces.IServices;
+﻿using Azure.Core;
+using BibliotecaApi.Interfaces;
+using BibliotecaApi.Interfaces.IServices;
 using BibliotecaApi.Model.Dtos.Autor;
 using BibliotecaApi.Model.Dtos.Livro;
 using BibliotecaApi.Services;
@@ -85,6 +87,17 @@ namespace BibliotecaApi.Controllers
 		public async Task<IActionResult> AtualizarLivro([FromRoute] int id, [FromBody]AtualizarLivroRequest request)
 		{
 			var result = await _livroService.AtualizarLivro(id, request);
+
+			if (!result.IsSuccess)
+				return BadRequest(result.Error);
+
+			return Ok(result.Data);
+		}
+
+		[HttpPost("importar")]
+		public async Task<IActionResult> teste(string isbn)
+		{
+			var result = await _livroService.ImportarLivro(isbn);
 
 			if (!result.IsSuccess)
 				return BadRequest(result.Error);

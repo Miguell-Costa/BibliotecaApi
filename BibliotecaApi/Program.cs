@@ -22,57 +22,65 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 			maxRetryDelay: TimeSpan.FromSeconds(10),
 			errorNumbersToAdd: null)));
 
-//// Services
-//var baseUrl = builder.Configuration["AuthenticationApi:BaseUrl"]
-//	?? throw new InvalidOperationException();
+// Api open library
+var googleBooksBaseUrl = builder.Configuration["GoogleBooks:BaseUrl"];
 
-//builder.Services.AddHttpClient<IPublicKeyService, PublicKeyService>(cliente =>
-//{
-//	cliente.BaseAddress = new Uri(baseUrl!);
+builder.Services.AddHttpClient<IGoogleBooksService, GoogleBooksService>(client =>
+{
+	client.BaseAddress = new Uri(googleBooksBaseUrl!);
+});
 
-//});
+// Services
+var baseUrl = builder.Configuration["AuthenticationApi:BaseUrl"]
+	?? throw new InvalidOperationException();
 
-//var serviceProvider = builder.Services.BuildServiceProvider();
-//var publicKeyService = serviceProvider.GetRequiredService<IPublicKeyService>();
-//var result = await publicKeyService.GetPublicKeyAsync();
+builder.Services.AddHttpClient<IPublicKeyService, PublicKeyService>(cliente =>
+{
+	cliente.BaseAddress = new Uri(baseUrl!);
 
-//if (!result.IsSuccess)
-//{
-//	throw new Exception(result.Errors.First());
-//}
+});
 
-//var rsa = RSA.Create();
+var serviceProvider = builder.Services.BuildServiceProvider();
+var publicKeyService = serviceProvider.GetRequiredService<IPublicKeyService>();
+var result = await publicKeyService.GetPublicKeyAsync();
 
-//var publicKey = result.Data;
-//Debug.WriteLine(publicKey);
-//rsa.ImportFromPem(publicKey!);
+if (!result.IsSuccess)
+{
+	throw new Exception(result.Errors.First());
+}
+
+var rsa = RSA.Create();
+
+var publicKey = result.Data;
+Debug.WriteLine(publicKey);
+rsa.ImportFromPem(publicKey!);
 
 // Configuração Jwt
-//var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 
-//builder.Services.AddAuthentication(options =>
-//{
-//	// Quando precisares de descobrir quem é o utilizador, usa o JWT.
-//	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+builder.Services.AddAuthentication(options =>
+{
+	// Quando precisares de descobrir quem é o utilizador, usa o JWT.
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 
-//	// Se o utilizador não estiver autenticado, como devo responder?
-//	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+	// Se o utilizador não estiver autenticado, como devo responder?
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 
-//})
-//.AddJwtBearer(options =>
-//{
-//	options.TokenValidationParameters = new TokenValidationParameters
-//	{
-//		ValidateIssuer = true,
-//		ValidateAudience = true,
-//		ValidateLifetime = true,
-//		ValidateIssuerSigningKey = true,
-//		ValidIssuer = jwtSettings["Issuer"],
-//		ValidAudience = jwtSettings["Audience"],
-//		IssuerSigningKey = new RsaSecurityKey(rsa),
-//		ClockSkew = TimeSpan.Zero
-//	};
-//});
+})
+.AddJwtBearer(options =>
+{
+	options.TokenValidationParameters = new TokenValidationParameters
+	{
+		ValidateIssuer = true,
+		ValidateAudience = true,
+		ValidateLifetime = true,
+		ValidateIssuerSigningKey = true,
+		ValidIssuer = jwtSettings["Issuer"],
+		ValidAudience = jwtSettings["Audience"],
+		IssuerSigningKey = new RsaSecurityKey(rsa),
+		ClockSkew = TimeSpan.Zero
+	};
+});
 
 // Policies
 builder.Services.AddAuthorization(options =>

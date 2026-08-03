@@ -12,5 +12,6 @@ namespace BibliotecaApi.Interfaces.IRepositories
 		Task<Autor> ApagarAsync(Autor autor);
 		Task<bool> TemLivrosAssociados(int id);
 		Task<Autor> AtualizarAutorAsync(CriarAutorRequest request, Autor autor);
+		Task<Autor> GetByNome(string Nome);
 	}
 }
